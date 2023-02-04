@@ -481,5 +481,9 @@ width = 4.0
 default_color = Color( 1, 0, 0, 1 )
 
 [node name="camera" type="Camera2D" parent="."]
-position = Vector2( 0, -90 )
 current = true
+smoothing_enabled = true
+offset_v = -0.4
+
+[node name="land_timer" type="Timer" parent="."]
+one_shot = true

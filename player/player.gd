@@ -8,20 +8,23 @@ onready var raycast = $raycast
 onready var hairline = $hairline
 onready var sprite = $sprite
 onready var hair_sprite = $hair_sprite
+onready var land_timer = $land_timer
 
-const DECELERATION = 24
+const DECELERATION = 8
 const VELOCITY = 128
 const MAX_VELOCITY = 64 * 4
-const GRAVITY = 24
+const GRAVITY = 8
 const MAX_JUMP_HEIGHT = 16 * 3
-const MAX_HOOK_DIST = 640
 
-const HOOK_DELAY_TIME = 0.3
+const HOOK_DELAY_TIME = 0.1
 const HOOK_SPEED = 32
-const HOOK_PULL_SPEED = 256 * 3
+const HOOK_PULL_SPEED = 256 * 1.5
+const MIN_HOOK_DIST = 32
+const MAX_HOOK_DIST = [0, 128, 256, 512]
 
 const JUMP_INPUT_DURATION = 0.06
 const COYOTE_TIME_DURATION = 0.06
+const LAND_FRAME_DURATION = 0.1
 
 var velocity = Vector2.ZERO
 var direction = Vector2.ZERO
@@ -30,7 +33,7 @@ var grounded = false
 
 var jump_height = null
 var nearest_hook = null
-var hair_length = 0
+var hair_length = 1
 
 enum HookState {
     NONE,
@@ -45,10 +48,12 @@ func _ready():
     hook_timer.connect("timeout", self, "_on_hook_timer_timeout")
 
 func _physics_process(_delta):
-    if Input.is_action_just_pressed("up"):
-        hair_length = min(hair_length + 1, 4)
-    if Input.is_action_just_pressed("down"):
-        hair_length = max(hair_length - 1, 0)
+    if Input.is_action_pressed("up"):
+        direction.y = -1
+    elif Input.is_action_pressed("down"):
+        direction.y = 1
+    else:
+        direction.y = 0
 
     # Direction input
     if Input.is_action_pressed("right"):
@@ -87,8 +92,6 @@ func _physics_process(_delta):
     if hook_state == HookState.PULL:
         velocity = position.direction_to(nearest_hook.position) * HOOK_PULL_SPEED
     else:
-        if not grounded:
-            print(velocity)
         if abs(velocity.x) > MAX_VELOCITY or direction.x == 0:
             var decel_direction = -1
             if velocity.x < 0:
@@ -96,8 +99,6 @@ func _physics_process(_delta):
             var target_velocity = MAX_VELOCITY * direction.x
 
             var deceleration = DECELERATION
-            if not grounded:
-                deceleration *= 0.5
 
             if abs(velocity.x - target_velocity) <= deceleration:
                 velocity.x = target_velocity
@@ -118,6 +119,11 @@ func _physics_process(_delta):
     if grounded and velocity.y >= 5:
         velocity.y = 5
 
+    if not grounded:
+        land_timer.stop()
+    if not was_grounded and grounded:
+        land_timer.start(LAND_FRAME_DURATION)
+
     # Jump input
     if (grounded or not coyote_timer.is_stopped()) and not jump_timer.is_stopped() and hook_state == HookState.NONE:
         jump_height = position.y - MAX_JUMP_HEIGHT
@@ -130,23 +136,26 @@ func _physics_process(_delta):
         hook_state = HookState.NONE
 
     # Hook Search
-    if hook_state == HookState.NONE:
+    if hook_state == HookState.NONE and hair_length > 1:
         search_hooks()
 
     update_sprite()
 
 func search_hooks():
+    var look_direction
+    if direction.y != 0:
+        look_direction = Vector2(0, direction.y)
+    else:
+        look_direction = Vector2(facing_direction, 0)
+    var search_origin = position + (look_direction * 128)
+
     nearest_hook = null
     var nearest_hook_dist = 0
     for hook in get_tree().get_nodes_in_group("hooks"):
         hook.set_inactive()
     
     for hook in get_tree().get_nodes_in_group("hooks"):
-        var hook_dist = position.distance_to(hook.position)
-        if hook_dist > MAX_HOOK_DIST:
-            continue
-        var direction_to_hook = position.direction_to(hook.position)
-        if (direction_to_hook.x > 0 and facing_direction == -1) or (direction_to_hook.x < 0 and facing_direction == 1):
+        if position.distance_to(hook.position) > MAX_HOOK_DIST[hair_length - 1] or position.distance_to(hook.position) < MIN_HOOK_DIST:
             continue
 
         raycast.cast_to = hook.position - position
@@ -154,6 +163,7 @@ func search_hooks():
         if raycast.is_colliding():
             continue
 
+        var hook_dist = search_origin.distance_to(hook.position)
         if nearest_hook == null or hook_dist < nearest_hook_dist:
             nearest_hook = hook
             nearest_hook_dist = hook_dist
@@ -166,14 +176,14 @@ func _on_hook_timer_timeout():
     jump_height = null
 
 func update_sprite():
-    if grounded and velocity.x == 0:
+    if grounded and not land_timer.is_stopped():
+        sprite.play("jump_fall")
+    elif grounded and velocity.x == 0:
         sprite.play("idle")
     elif grounded:
         sprite.play("run")
-    elif not grounded and velocity.y == 0:
+    elif not grounded and velocity.y >= 0:
         sprite.play("jump_apex")
-    elif not grounded and velocity.y > 0:
-        sprite.play("jump_fall")
     elif not grounded and jump_height != null and abs(position.y - jump_height) > 16:
         sprite.play("jump")
     elif not grounded: 
