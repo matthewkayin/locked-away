@@ -5,19 +5,21 @@ onready var jump_timer = $jump_timer
 onready var coyote_timer = $coyote_timer
 onready var delay_gravity_timer = $delay_gravity_timer
 onready var raycast = $raycast
-onready var hairline = $hairline
 onready var sprite = $sprite
 onready var hair_sprite = $hair_sprite
 onready var land_timer = $land_timer
+onready var camera = $camera
+onready var tween = $tween
+onready var hair_vine = $hair_vine
 
-const DECELERATION = 8
-const VELOCITY = 128
+const DECELERATION = 12
+const VELOCITY = 96
 const MAX_VELOCITY = 64 * 4
-const GRAVITY = 8
-const MAX_JUMP_HEIGHT = 16 * 3
+const GRAVITY = 10
+const MAX_JUMP_HEIGHT = 16 * 2
 
-const HOOK_DELAY_TIME = 0.1
-const HOOK_SPEED = 32
+const HOOK_DELAY_TIME = 0.2
+const HOOK_SPEED = 64
 const HOOK_PULL_SPEED = 256 * 1.5
 const MIN_HOOK_DIST = 32
 const MAX_HOOK_DIST = [0, 128, 256, 512]
@@ -43,11 +45,16 @@ enum HookState {
 }
 
 var hook_state = HookState.NONE
+var paused = false
+var camera_pos = Vector2.ZERO
 
 func _ready():
     hook_timer.connect("timeout", self, "_on_hook_timer_timeout")
 
 func _physics_process(_delta):
+    if paused:
+        return
+
     if Input.is_action_pressed("up"):
         direction.y = -1
     elif Input.is_action_pressed("down"):
@@ -73,20 +80,23 @@ func _physics_process(_delta):
 
     # Grapple input
     if nearest_hook != null and Input.is_action_just_pressed("grapple"):
-        hairline.add_point(Vector2.ZERO)
-        hairline.add_point(Vector2.ZERO)
+        hair_vine.region_rect.size.y = 0
         hook_state = HookState.THROW
 
     # Hook throw
     if hook_state == HookState.THROW:
-        if hairline.points[1].distance_to(nearest_hook.position - position) <= HOOK_SPEED:
-            hairline.points[1] = nearest_hook.position - position
+        var desired_length = position.distance_to(nearest_hook.position)
+        if desired_length - hair_vine.region_rect.size.y <= HOOK_SPEED:
+            hair_vine.region_rect.size.y = desired_length
             hook_state = HookState.DELAY
             hook_timer.start(HOOK_DELAY_TIME)
         else:
-            hairline.points[1] += hairline.points[1].direction_to(nearest_hook.position - position) * HOOK_SPEED
+            hair_vine.region_rect.size.y += HOOK_SPEED
     elif hook_state != HookState.NONE:
-        hairline.points[1] = nearest_hook.position - position
+        hair_vine.region_rect.size.y = position.distance_to(nearest_hook.position)
+
+    if hook_state != HookState.NONE:
+        hair_vine.rotation = (nearest_hook.position - position).angle() - PI / 2
 
     # Velocity
     if hook_state == HookState.PULL:
@@ -99,6 +109,8 @@ func _physics_process(_delta):
             var target_velocity = MAX_VELOCITY * direction.x
 
             var deceleration = DECELERATION
+            if not grounded:
+                deceleration *= 0.5
 
             if abs(velocity.x - target_velocity) <= deceleration:
                 velocity.x = target_velocity
@@ -110,7 +122,6 @@ func _physics_process(_delta):
             velocity.y += GRAVITY
         else:
             velocity.y = -MAX_VELOCITY
-        #velocity.y = clamp(velocity.y, -MAX_VELOCITY, MAX_VELOCITY)
 
     var was_grounded = grounded
     grounded = is_on_floor()
@@ -132,7 +143,8 @@ func _physics_process(_delta):
     var _ret = move_and_slide(velocity, Vector2.UP)
 
     if hook_state == HookState.PULL and position.distance_to(nearest_hook.position) <= 8:
-        hairline.clear_points()
+        hair_vine.region_rect.position.x = 0
+        hair_vine.region_rect.size.y = 0
         hook_state = HookState.NONE
 
     # Hook Search
@@ -172,11 +184,20 @@ func search_hooks():
         nearest_hook.set_active()
 
 func _on_hook_timer_timeout():
-    hook_state = HookState.PULL
-    jump_height = null
+    if hair_vine.region_rect.position.x != 0:
+        hair_vine.region_rect.position.x = 10
+        hook_timer.start(HOOK_DELAY_TIME)
+    else:
+        jump_height = null
+        hair_vine.region_rect.position.x = 20
+        hook_state = HookState.PULL
 
 func update_sprite():
-    if grounded and not land_timer.is_stopped():
+    if hook_state == HookState.THROW or hook_state == HookState.DELAY:
+        sprite.play("grapple_throw")
+    elif hook_state == HookState.PULL:
+        sprite.play("grapple_pull")
+    elif grounded and not land_timer.is_stopped():
         sprite.play("jump_fall")
     elif grounded and velocity.x == 0:
         sprite.play("idle")
@@ -194,6 +215,32 @@ func update_sprite():
     else:
         hair_sprite.animation = String(hair_length) + "_" + sprite.animation
         hair_sprite.frame = sprite.frame
+
+    if hook_state != HookState.NONE:
+        sprite.rotation = (nearest_hook.position - position).angle() + (PI / 2)
+    else:
+        sprite.rotation = 0
+    hair_sprite.rotation = sprite.rotation
     
     sprite.flip_h = facing_direction == -1
     hair_sprite.flip_h = sprite.flip_h
+
+func set_current_room(room):
+    pause()
+    var CAMERA_TRANSITION_DURATION = 1.0
+    tween.interpolate_property(camera, "limit_left", camera.limit_left, room.position.x - room.collider.shape.extents.x, CAMERA_TRANSITION_DURATION)
+    tween.interpolate_property(camera, "limit_top", camera.limit_top, room.position.y - room.collider.shape.extents.y, CAMERA_TRANSITION_DURATION)
+    tween.interpolate_property(camera, "limit_right", camera.limit_right, room.position.x + room.collider.shape.extents.x, CAMERA_TRANSITION_DURATION)
+    tween.interpolate_property(camera, "limit_bottom", camera.limit_bottom, room.position.y + room.collider.shape.extents.y, CAMERA_TRANSITION_DURATION)
+    tween.start()
+    yield(tween, "tween_all_completed")
+    resume()
+
+func pause():
+    paused = true
+    sprite.stop()
+    hair_sprite.stop()
+
+func resume():
+    paused = false
+    sprite.play()
