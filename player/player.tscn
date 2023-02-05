@@ -1,4 +1,4 @@
-[gd_scene load_steps=102 format=2]
+[gd_scene load_steps=103 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/player_spritesheet.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://player/vine.png" type="Texture" id=4]
 [ext_resource path="res://player/grapple_point.png" type="Texture" id=5]
 [ext_resource path="res://player/player_hairgrow.png" type="Texture" id=6]
+[ext_resource path="res://sfx/Player_Grapple.wav" type="AudioStream" id=7]
 
 [sub_resource type="AtlasTexture" id=80]
 atlas = ExtResource( 3 )
@@ -673,3 +674,12 @@ one_shot = true
 
 [node name="death_timer" type="Timer" parent="."]
 one_shot = true
+
+[node name="footstep" type="AudioStreamPlayer2D" parent="."]
+volume_db = 1.0
+
+[node name="footstep_timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="grapple_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 7 )

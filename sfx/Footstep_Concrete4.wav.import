@@ -1,0 +1,23 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/Footstep_Concrete4.wav-7319b1e4c422e76a3d466b2063b03dba.sample"
+
+[deps]
+
+source_file="res://sfx/Footstep_Concrete4.wav"
+dest_files=[ "res://.import/Footstep_Concrete4.wav-7319b1e4c422e76a3d466b2063b03dba.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

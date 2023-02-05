@@ -16,6 +16,17 @@ onready var hair_vine = $hair_vine
 onready var grapple_point = $grapple_point
 onready var blocks = get_node("../blocks")
 onready var death_timer = $death_timer
+onready var footstep_sound = $footstep
+onready var footstep_timer = $footstep_timer
+onready var grapple_sound = $grapple_sound
+
+onready var footsteps = [
+    preload("res://sfx/Footstep_Concrete1.wav"),
+    preload("res://sfx/Footstep_Concrete2.wav"),
+    preload("res://sfx/Footstep_Concrete3.wav"),
+    preload("res://sfx/Footstep_Concrete4.wav"),
+    preload("res://sfx/Footstep_Concrete5.wav"),
+]
 
 const DECELERATION = 12
 const VELOCITY = 96
@@ -38,6 +49,7 @@ var velocity = Vector2.ZERO
 var direction = Vector2.ZERO
 var facing_direction = 1
 var grounded = false
+var was_grounded = false
 
 var jump_height = null
 var nearest_hook = null
@@ -59,7 +71,10 @@ var paused = false
 var paused_input = false
 var camera_pos = Vector2.ZERO
 
+var rng
+
 func _ready():
+    rng = RandomNumberGenerator.new()
     hook_timer.connect("timeout", self, "_on_hook_timer_timeout")
 
 func _physics_process(_delta):
@@ -144,7 +159,7 @@ func _physics_process(_delta):
         else:
             velocity.y = -MAX_VELOCITY
 
-    var was_grounded = grounded
+    was_grounded = grounded
     grounded = is_on_floor()
     if not was_grounded and grounded:
         emit_signal("grounded")
@@ -234,6 +249,7 @@ func _on_hook_timer_timeout():
     jump_height = null
     hair_vine.region_rect.position.x = 20
     hook_state = HookState.PULL
+    grapple_sound.play()
     nearest_hook.on_pull(self)
 
 func update_sprite(force_anim=""):
@@ -255,6 +271,10 @@ func update_sprite(force_anim=""):
         sprite.play("jump")
     elif not grounded: 
         sprite.play("jump_rise")
+
+    var should_be_footsteps = sprite.animation == "run" or (grounded and not was_grounded)
+    if should_be_footsteps and not footstep_sound.playing and footstep_timer.is_stopped():
+        play_footstep()
 
     if not hair_sprite.animation.ends_with("grow"):
         hair_sprite.animation = String(hair_length) + "_" + sprite.animation
@@ -305,9 +325,7 @@ func die():
         return
     visible = false
     death_timer.start(DEATH_DURATION)
-    print("hey")
     yield(death_timer, "timeout")
-    print("hi")
 
     hook_timer.stop()
     jump_timer.stop()
@@ -335,3 +353,8 @@ func grow_hair():
     yield(hair_sprite, "animation_finished")
     hair_sprite.animation = String(hair_length) + "_" + sprite.animation
     hair_sprite.frame = sprite.frame
+
+func play_footstep():
+    footstep_sound.stream = footsteps[rng.randi_range(0, 4)]
+    footstep_sound.play()
+    footstep_timer.start(0.4)

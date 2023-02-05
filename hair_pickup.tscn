@@ -142,6 +142,7 @@ shape = SubResource( 1 )
 [node name="sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 8 )
 animation = "idle"
+frame = 1
 playing = true
 
 [node name="fruit" type="AnimatedSprite" parent="."]
