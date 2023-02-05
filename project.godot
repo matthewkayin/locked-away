@@ -20,8 +20,10 @@ _global_script_class_icons={
 
 [application]
 
-config/name="seattlejam23"
-run/main_scene="res://world.tscn"
+config/name="Locked Away"
+run/main_scene="res://title.tscn"
+boot_splash/show_image=false
+boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/icon="res://icon.png"
 
 [display]

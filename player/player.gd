@@ -19,6 +19,7 @@ onready var death_timer = $death_timer
 onready var footstep_sound = $footstep
 onready var footstep_timer = $footstep_timer
 onready var grapple_sound = $grapple_sound
+onready var death_sprite = $death
 
 onready var footsteps = [
     preload("res://sfx/Footstep_Concrete1.wav"),
@@ -321,11 +322,16 @@ func pause_input():
     paused_input = true
 
 func die():
-    if not visible:
+    if death_sprite.visible:
         return
-    visible = false
-    death_timer.start(DEATH_DURATION)
-    yield(death_timer, "timeout")
+
+    paused_input = true
+        
+    sprite.visible = false
+    hair_sprite.visible = false
+    hair_vine.visible = false
+    grapple_point.visible = false
+    death_sprite.visible = true
 
     hook_timer.stop()
     jump_timer.stop()
@@ -341,10 +347,25 @@ func die():
     velocity = Vector2.ZERO
     direction = Vector2.ZERO
 
-    blocks.load_state()
+    death_sprite.play("die")
+    yield(death_sprite, "animation_finished")
 
-    sprite.play("idle")
+    blocks.load_state()
     position = spawn_point
+
+    death_sprite.play("spawn")
+    while death_sprite.frame != 5:
+        yield(death_sprite, "frame_changed")
+
+    sprite.visible = true
+    hair_sprite.visible = true
+    hair_vine.visible = true
+    sprite.play("idle")
+
+    yield(death_sprite, "animation_finished")
+    death_sprite.visible = false
+
+    paused_input = false
     visible = true
 
 func grow_hair():

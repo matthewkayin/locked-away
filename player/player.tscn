@@ -1,4 +1,4 @@
-[gd_scene load_steps=103 format=2]
+[gd_scene load_steps=117 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/player_spritesheet.png" type="Texture" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://player/grapple_point.png" type="Texture" id=5]
 [ext_resource path="res://player/player_hairgrow.png" type="Texture" id=6]
 [ext_resource path="res://sfx/Player_Grapple.wav" type="AudioStream" id=7]
+[ext_resource path="res://player/player_respawn.png" type="Texture" id=8]
 
 [sub_resource type="AtlasTexture" id=80]
 atlas = ExtResource( 3 )
@@ -607,6 +608,67 @@ animations = [ {
 "speed": 5.0
 } ]
 
+[sub_resource type="AtlasTexture" id=104]
+atlas = ExtResource( 8 )
+region = Rect2( 0, 0, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=105]
+atlas = ExtResource( 8 )
+region = Rect2( 24, 0, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=106]
+atlas = ExtResource( 8 )
+region = Rect2( 48, 0, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=107]
+atlas = ExtResource( 8 )
+region = Rect2( 72, 0, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=108]
+atlas = ExtResource( 8 )
+region = Rect2( 0, 24, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=109]
+atlas = ExtResource( 8 )
+region = Rect2( 24, 24, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=110]
+atlas = ExtResource( 8 )
+region = Rect2( 48, 24, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=111]
+atlas = ExtResource( 8 )
+region = Rect2( 72, 24, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=112]
+atlas = ExtResource( 8 )
+region = Rect2( 96, 24, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=113]
+atlas = ExtResource( 8 )
+region = Rect2( 120, 24, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=114]
+atlas = ExtResource( 8 )
+region = Rect2( 144, 24, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=115]
+atlas = ExtResource( 8 )
+region = Rect2( 168, 24, 24, 24 )
+
+[sub_resource type="SpriteFrames" id=116]
+animations = [ {
+"frames": [ SubResource( 104 ), SubResource( 105 ), SubResource( 106 ), SubResource( 107 ) ],
+"loop": true,
+"name": "die",
+"speed": 8.0
+}, {
+"frames": [ SubResource( 108 ), SubResource( 109 ), SubResource( 110 ), SubResource( 111 ), SubResource( 112 ), SubResource( 113 ), SubResource( 114 ), SubResource( 115 ) ],
+"loop": true,
+"name": "spawn",
+"speed": 12.0
+} ]
+
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 8, 10 )
 
@@ -632,7 +694,7 @@ __meta__ = {
 [node name="sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 34 )
 animation = "grapple_follow"
-frame = 4
+playing = true
 
 [node name="hair_sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 16 )
@@ -648,6 +710,11 @@ region_rect = Rect2( 0, 0, 10, 0 )
 [node name="grapple_point" type="Sprite" parent="."]
 visible = false
 texture = ExtResource( 5 )
+
+[node name="death" type="AnimatedSprite" parent="."]
+visible = false
+frames = SubResource( 116 )
+animation = "die"
 
 [node name="collider" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 2 )
