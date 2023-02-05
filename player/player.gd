@@ -11,18 +11,19 @@ onready var land_timer = $land_timer
 onready var camera = $camera
 onready var tween = $tween
 onready var hair_vine = $hair_vine
+onready var grapple_point = $grapple_point
 
 const DECELERATION = 12
 const VELOCITY = 96
 const MAX_VELOCITY = 64 * 4
 const GRAVITY = 10
-const MAX_JUMP_HEIGHT = 16 * 2
+const MAX_JUMP_HEIGHT = 1
 
 const HOOK_DELAY_TIME = 0.2
 const HOOK_SPEED = 64
-const HOOK_PULL_SPEED = 256 * 1.5
+const HOOK_PULL_SPEED = 256 
 const MIN_HOOK_DIST = 32
-const MAX_HOOK_DIST = [0, 128, 256, 512]
+const MAX_HOOK_DIST = [0, 64, 96, 128]
 
 const JUMP_INPUT_DURATION = 0.06
 const COYOTE_TIME_DURATION = 0.06
@@ -36,6 +37,9 @@ var grounded = false
 var jump_height = null
 var nearest_hook = null
 var hair_length = 1
+
+var entered_first_room = false
+var spawn_point = null
 
 enum HookState {
     NONE,
@@ -97,6 +101,9 @@ func _physics_process(_delta):
 
     if hook_state != HookState.NONE:
         hair_vine.rotation = (nearest_hook.position - position).angle() - PI / 2
+        if hook_state != HookState.THROW:
+            grapple_point.visible = true
+            grapple_point.position = nearest_hook.position - position
 
     # Velocity
     if hook_state == HookState.PULL:
@@ -130,6 +137,9 @@ func _physics_process(_delta):
     if grounded and velocity.y >= 5:
         velocity.y = 5
 
+    if grounded and spawn_point == null:
+        spawn_point = position
+
     if not grounded:
         land_timer.stop()
     if not was_grounded and grounded:
@@ -141,10 +151,19 @@ func _physics_process(_delta):
 
     # Movement
     var _ret = move_and_slide(velocity, Vector2.UP)
+    for i in get_slide_count():
+        var collider = get_slide_collision(i)
+        if collider.collider.name == "spikes":
+            die()
+            return
 
+    # Check if end hook state
+    # Possible bugfix idea: hooks send an area2d on_area_entered message to player when they pass it
+    # If player nearest_hook == the hook that sent the message, release grapple
     if hook_state == HookState.PULL and position.distance_to(nearest_hook.position) <= 8:
         hair_vine.region_rect.position.x = 0
         hair_vine.region_rect.size.y = 0
+        grapple_point.visible = false
         hook_state = HookState.NONE
 
     # Hook Search
@@ -184,13 +203,9 @@ func search_hooks():
         nearest_hook.set_active()
 
 func _on_hook_timer_timeout():
-    if hair_vine.region_rect.position.x != 0:
-        hair_vine.region_rect.position.x = 10
-        hook_timer.start(HOOK_DELAY_TIME)
-    else:
-        jump_height = null
-        hair_vine.region_rect.position.x = 20
-        hook_state = HookState.PULL
+    jump_height = null
+    hair_vine.region_rect.position.x = 20
+    hook_state = HookState.PULL
 
 func update_sprite():
     if hook_state == HookState.THROW or hook_state == HookState.DELAY:
@@ -228,12 +243,16 @@ func update_sprite():
 func set_current_room(room):
     pause()
     var CAMERA_TRANSITION_DURATION = 1.0
+    if not entered_first_room:
+        CAMERA_TRANSITION_DURATION = 0
+        entered_first_room = true
     tween.interpolate_property(camera, "limit_left", camera.limit_left, room.position.x - room.collider.shape.extents.x, CAMERA_TRANSITION_DURATION)
     tween.interpolate_property(camera, "limit_top", camera.limit_top, room.position.y - room.collider.shape.extents.y, CAMERA_TRANSITION_DURATION)
     tween.interpolate_property(camera, "limit_right", camera.limit_right, room.position.x + room.collider.shape.extents.x, CAMERA_TRANSITION_DURATION)
     tween.interpolate_property(camera, "limit_bottom", camera.limit_bottom, room.position.y + room.collider.shape.extents.y, CAMERA_TRANSITION_DURATION)
     tween.start()
     yield(tween, "tween_all_completed")
+    spawn_point = null
     resume()
 
 func pause():
@@ -244,3 +263,20 @@ func pause():
 func resume():
     paused = false
     sprite.play()
+
+func die():
+    hook_timer.stop()
+    jump_timer.stop()
+    coyote_timer.stop()
+    delay_gravity_timer.stop()
+    land_timer.stop()
+    hook_state = HookState.NONE
+    jump_height = null
+    nearest_hook = null
+    hair_vine.region_rect.position.x = 0
+    hair_vine.region_rect.size.y = 0
+    grapple_point.visible = false
+    velocity = Vector2.ZERO
+    direction = Vector2.ZERO
+    sprite.play("idle")
+    position = spawn_point

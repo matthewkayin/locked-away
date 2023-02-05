@@ -1,9 +1,10 @@
-[gd_scene load_steps=91 format=2]
+[gd_scene load_steps=92 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/player_spritesheet.png" type="Texture" id=2]
 [ext_resource path="res://player/player_grapple.png" type="Texture" id=3]
 [ext_resource path="res://player/vine.png" type="Texture" id=4]
+[ext_resource path="res://player/grapple_point.png" type="Texture" id=5]
 
 [sub_resource type="AtlasTexture" id=80]
 atlas = ExtResource( 3 )
@@ -592,6 +593,10 @@ offset = Vector2( -5, 0 )
 region_enabled = true
 region_rect = Rect2( 0, 0, 10, 0 )
 
+[node name="grapple_point" type="Sprite" parent="."]
+visible = false
+texture = ExtResource( 5 )
+
 [node name="collider" type="CollisionShape2D" parent="."]
 position = Vector2( 0, 2 )
 shape = SubResource( 1 )
@@ -609,10 +614,6 @@ one_shot = true
 one_shot = true
 
 [node name="raycast" type="RayCast2D" parent="."]
-
-[node name="hairline" type="Line2D" parent="."]
-width = 4.0
-default_color = Color( 1, 0, 0, 1 )
 
 [node name="land_timer" type="Timer" parent="."]
 one_shot = true

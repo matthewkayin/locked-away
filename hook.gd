@@ -1,15 +1,13 @@
 extends Node2D
+class_name Hook
 
-onready var inactive = $inactive
-onready var active = $active
+onready var cursor = $cursor
 
 func _ready():
     add_to_group("hooks")
 
 func set_inactive():
-    inactive.visible = true
-    active.visible = false
+    cursor.visible = false
 
 func set_active():
-    active.visible = true
-    inactive.visible = false
+    cursor.visible = true
