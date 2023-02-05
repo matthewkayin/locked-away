@@ -22,7 +22,7 @@ const MAX_JUMP_HEIGHT = 1
 const HOOK_DELAY_TIME = 0.2
 const HOOK_SPEED = 64
 const HOOK_PULL_SPEED = 256 
-const MIN_HOOK_DIST = 32
+const MIN_HOOK_DIST = 16
 const MAX_HOOK_DIST = [0, 64, 96, 128]
 
 const JUMP_INPUT_DURATION = 0.06
@@ -128,6 +128,8 @@ func _physics_process(_delta):
             velocity.x = direction.x * VELOCITY
         if jump_height == null:
             velocity.y += GRAVITY
+            if velocity.y > MAX_VELOCITY:
+                velocity.y = MAX_VELOCITY
         else:
             velocity.y = -MAX_VELOCITY
 
@@ -140,6 +142,8 @@ func _physics_process(_delta):
 
     if grounded and spawn_point == null:
         spawn_point = position
+        spawn_point.x = clamp(spawn_point.x, camera.limit_left + 8, camera.limit_right - 8)
+        spawn_point.y = clamp(spawn_point.y, camera.limit_top + 8, camera.limit_bottom - 8)
 
     if not grounded:
         land_timer.stop()
@@ -181,7 +185,7 @@ func search_hooks():
     if direction.y != 0:
         look_direction = Vector2(0, direction.y)
     else:
-        look_direction = Vector2(facing_direction, 0)
+        look_direction = Vector2(facing_direction, -1)
     var search_origin = position + (look_direction * 128)
 
     nearest_hook = null
