@@ -36,10 +36,11 @@ var grounded = false
 
 var jump_height = null
 var nearest_hook = null
-var hair_length = 1
+export var hair_length = 1
 
 var entered_first_room = false
 var spawn_point = null
+var current_room = null
 
 enum HookState {
     NONE,
@@ -173,6 +174,9 @@ func _physics_process(_delta):
     update_sprite()
 
 func search_hooks():
+    if current_room == null:
+        return
+
     var look_direction
     if direction.y != 0:
         look_direction = Vector2(0, direction.y)
@@ -187,6 +191,8 @@ func search_hooks():
     
     for hook in get_tree().get_nodes_in_group("hooks"):
         if position.distance_to(hook.position) > MAX_HOOK_DIST[hair_length - 1] or position.distance_to(hook.position) < MIN_HOOK_DIST:
+            continue
+        if not current_room.overlaps_area(hook):
             continue
 
         raycast.cast_to = hook.position - position
@@ -253,6 +259,7 @@ func set_current_room(room):
     tween.start()
     yield(tween, "tween_all_completed")
     spawn_point = null
+    current_room = room
     resume()
 
 func pause():
