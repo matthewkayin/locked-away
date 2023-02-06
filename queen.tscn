@@ -106,11 +106,15 @@ animations = [ {
 extents = Vector2( 112, 56 )
 
 [node name="queen" type="Area2D"]
+z_index = -1
 script = ExtResource( 1 )
 
 [node name="sprite" type="AnimatedSprite" parent="."]
+z_index = -1
+z_as_relative = false
 frames = SubResource( 20 )
 animation = "ha"
+frame = 3
 playing = true
 
 [node name="collider" type="CollisionShape2D" parent="."]
