@@ -41,21 +41,19 @@ script = ExtResource( 2 )
 
 [node name="sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 7 )
-frame = 1
+frame = 4
 playing = true
 centered = false
 
 [node name="play" type="Sprite" parent="."]
-position = Vector2( 142, 207 )
-scale = Vector2( 0.5, 0.5 )
+position = Vector2( 392, 110 )
 texture = ExtResource( 3 )
 hframes = 2
 vframes = 2
 frame = 1
 
 [node name="quit" type="Sprite" parent="."]
-position = Vector2( 142, 239 )
-scale = Vector2( 0.5, 0.5 )
+position = Vector2( 392, 190 )
 texture = ExtResource( 3 )
 hframes = 2
 vframes = 2

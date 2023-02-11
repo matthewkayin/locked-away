@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/dream-of-little-prince-109014.mp3-d323726153b92a65fabfe67dcb57f3d9.mp3str"
+
+[deps]
+
+source_file="res://bgm/dream-of-little-prince-109014.mp3"
+dest_files=[ "res://.import/dream-of-little-prince-109014.mp3-d323726153b92a65fabfe67dcb57f3d9.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

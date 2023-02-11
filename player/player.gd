@@ -17,17 +17,8 @@ onready var grapple_point = $grapple_point
 onready var blocks = get_node("../blocks")
 onready var death_timer = $death_timer
 onready var footstep_sound = $footstep
-onready var footstep_timer = $footstep_timer
 onready var grapple_sound = $grapple_sound
 onready var death_sprite = $death
-
-onready var footsteps = [
-    preload("res://sfx/Footstep_Concrete1.wav"),
-    preload("res://sfx/Footstep_Concrete2.wav"),
-    preload("res://sfx/Footstep_Concrete3.wav"),
-    preload("res://sfx/Footstep_Concrete4.wav"),
-    preload("res://sfx/Footstep_Concrete5.wav"),
-]
 
 const DECELERATION = 12
 const VELOCITY = 96
@@ -49,8 +40,10 @@ const DEATH_DURATION = 1.0
 var velocity = Vector2.ZERO
 var direction = Vector2.ZERO
 var facing_direction = 1
+var rotation_direction = 1
 var grounded = false
 var was_grounded = false
+var is_grapple_follow = false
 
 var jump_height = null
 var nearest_hook = null
@@ -77,6 +70,7 @@ var rng
 func _ready():
     rng = RandomNumberGenerator.new()
     hook_timer.connect("timeout", self, "_on_hook_timer_timeout")
+    sprite.connect("animation_finished", self, "_on_animation_finished")
 
 func _physics_process(_delta):
     if paused:
@@ -208,6 +202,11 @@ func end_hook():
     hair_vine.region_rect.size.y = 0
     grapple_point.visible = false
     hook_state = HookState.NONE
+    sprite.play("grapple_follow")
+    is_grapple_follow = true
+    rotation_direction = 1
+    if velocity.x < 0: 
+        rotation_direction = -1
 
 func search_hooks():
     if current_room == null:
@@ -254,6 +253,9 @@ func _on_hook_timer_timeout():
     nearest_hook.on_pull(self)
 
 func update_sprite(force_anim=""):
+    if grounded and is_grapple_follow:
+        is_grapple_follow = false
+
     if force_anim != "":
         sprite.play(force_anim)
     elif hook_state == HookState.THROW or hook_state == HookState.DELAY:
@@ -266,6 +268,10 @@ func update_sprite(force_anim=""):
         sprite.play("idle")
     elif grounded:
         sprite.play("run")
+    elif not grounded and is_grapple_follow:
+        sprite.play("grapple_follow")
+    elif not grounded and sprite.animation == "grapple_fall":
+        sprite.play("grapple_fall")
     elif not grounded and velocity.y >= 0:
         sprite.play("jump_apex")
     elif not grounded and jump_height != null and abs(position.y - jump_height) > 16:
@@ -273,8 +279,7 @@ func update_sprite(force_anim=""):
     elif not grounded: 
         sprite.play("jump_rise")
 
-    var should_be_footsteps = sprite.animation == "run" or (grounded and not was_grounded)
-    if should_be_footsteps and not footstep_sound.playing and footstep_timer.is_stopped():
+    if grounded and not was_grounded:
         play_footstep()
 
     if not hair_sprite.animation.ends_with("grow"):
@@ -283,12 +288,23 @@ func update_sprite(force_anim=""):
 
     if hook_state != HookState.NONE:
         sprite.rotation = (nearest_hook.position - position).angle() + (PI / 2)
-    else:
+    elif grounded:
         sprite.rotation = 0
+    elif sprite.rotation != 0: 
+        var rotation_step = rotation_direction * 10
+        if abs(sprite.rotation_degrees + rotation_step) >= 360:
+            sprite.rotation_degrees = 0
+        else:
+            sprite.rotation_degrees += rotation_direction * 10
     hair_sprite.rotation = sprite.rotation
     
     sprite.flip_h = facing_direction == -1
     hair_sprite.flip_h = sprite.flip_h
+
+func _on_animation_finished():
+    if sprite.animation == "grapple_follow":
+        is_grapple_follow = false
+        sprite.play("grapple_fall")
 
 func set_current_room(room):
     pause()
@@ -376,6 +392,4 @@ func grow_hair():
     hair_sprite.frame = sprite.frame
 
 func play_footstep():
-    footstep_sound.stream = footsteps[rng.randi_range(0, 4)]
     footstep_sound.play()
-    footstep_timer.start(0.4)

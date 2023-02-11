@@ -1,4 +1,4 @@
-[gd_scene load_steps=117 format=2]
+[gd_scene load_steps=133 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/player_spritesheet.png" type="Texture" id=2]
@@ -6,28 +6,29 @@
 [ext_resource path="res://player/vine.png" type="Texture" id=4]
 [ext_resource path="res://player/grapple_point.png" type="Texture" id=5]
 [ext_resource path="res://player/player_hairgrow.png" type="Texture" id=6]
-[ext_resource path="res://sfx/Player_Grapple.wav" type="AudioStream" id=7]
+[ext_resource path="res://sfx/Cut.mp3" type="AudioStream" id=7]
 [ext_resource path="res://player/player_respawn.png" type="Texture" id=8]
+[ext_resource path="res://sfx/walk 2 medium.wav" type="AudioStream" id=9]
+
+[sub_resource type="AtlasTexture" id=122]
+atlas = ExtResource( 3 )
+region = Rect2( 130, 160, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=123]
+atlas = ExtResource( 3 )
+region = Rect2( 156, 160, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=124]
+atlas = ExtResource( 3 )
+region = Rect2( 182, 160, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=125]
+atlas = ExtResource( 3 )
+region = Rect2( 208, 160, 26, 40 )
 
 [sub_resource type="AtlasTexture" id=80]
 atlas = ExtResource( 3 )
 region = Rect2( 104, 160, 26, 40 )
-
-[sub_resource type="AtlasTexture" id=81]
-atlas = ExtResource( 3 )
-region = Rect2( 130, 160, 26, 40 )
-
-[sub_resource type="AtlasTexture" id=82]
-atlas = ExtResource( 3 )
-region = Rect2( 156, 160, 26, 40 )
-
-[sub_resource type="AtlasTexture" id=83]
-atlas = ExtResource( 3 )
-region = Rect2( 182, 160, 26, 40 )
-
-[sub_resource type="AtlasTexture" id=84]
-atlas = ExtResource( 3 )
-region = Rect2( 208, 160, 26, 40 )
 
 [sub_resource type="AtlasTexture" id=85]
 atlas = ExtResource( 3 )
@@ -95,10 +96,15 @@ region = Rect2( 168, 312, 24, 24 )
 
 [sub_resource type="SpriteFrames" id=34]
 animations = [ {
-"frames": [ SubResource( 80 ), SubResource( 81 ), SubResource( 82 ), SubResource( 83 ), SubResource( 84 ) ],
+"frames": [ SubResource( 122 ), SubResource( 123 ), SubResource( 124 ), SubResource( 125 ) ],
+"loop": true,
+"name": "grapple_fall",
+"speed": 10.0
+}, {
+"frames": [ SubResource( 80 ) ],
 "loop": true,
 "name": "grapple_follow",
-"speed": 8.0
+"speed": 10.0
 }, {
 "frames": [ SubResource( 85 ) ],
 "loop": true,
@@ -197,6 +203,26 @@ region = Rect2( 144, 24, 24, 24 )
 atlas = ExtResource( 2 )
 region = Rect2( 168, 24, 24, 24 )
 
+[sub_resource type="AtlasTexture" id=126]
+atlas = ExtResource( 3 )
+region = Rect2( 130, 40, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=127]
+atlas = ExtResource( 3 )
+region = Rect2( 156, 40, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=128]
+atlas = ExtResource( 3 )
+region = Rect2( 182, 40, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=129]
+atlas = ExtResource( 3 )
+region = Rect2( 208, 40, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=121]
+atlas = ExtResource( 3 )
+region = Rect2( 104, 40, 26, 40 )
+
 [sub_resource type="AtlasTexture" id=89]
 atlas = ExtResource( 3 )
 region = Rect2( 78, 40, 26, 40 )
@@ -273,6 +299,26 @@ region = Rect2( 144, 96, 24, 24 )
 atlas = ExtResource( 2 )
 region = Rect2( 168, 96, 24, 24 )
 
+[sub_resource type="AtlasTexture" id=130]
+atlas = ExtResource( 3 )
+region = Rect2( 130, 80, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=131]
+atlas = ExtResource( 3 )
+region = Rect2( 156, 80, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=132]
+atlas = ExtResource( 3 )
+region = Rect2( 182, 80, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=133]
+atlas = ExtResource( 3 )
+region = Rect2( 208, 80, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=134]
+atlas = ExtResource( 3 )
+region = Rect2( 104, 80, 26, 40 )
+
 [sub_resource type="AtlasTexture" id=91]
 atlas = ExtResource( 3 )
 region = Rect2( 78, 80, 26, 40 )
@@ -348,6 +394,26 @@ region = Rect2( 144, 168, 24, 24 )
 [sub_resource type="AtlasTexture" id=65]
 atlas = ExtResource( 2 )
 region = Rect2( 168, 168, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=135]
+atlas = ExtResource( 3 )
+region = Rect2( 130, 120, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=136]
+atlas = ExtResource( 3 )
+region = Rect2( 156, 120, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=137]
+atlas = ExtResource( 3 )
+region = Rect2( 182, 120, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=138]
+atlas = ExtResource( 3 )
+region = Rect2( 208, 120, 26, 40 )
+
+[sub_resource type="AtlasTexture" id=139]
+atlas = ExtResource( 3 )
+region = Rect2( 104, 120, 26, 40 )
 
 [sub_resource type="AtlasTexture" id=93]
 atlas = ExtResource( 3 )
@@ -472,6 +538,16 @@ animations = [ {
 "name": "1_run",
 "speed": 9.0
 }, {
+"frames": [ SubResource( 126 ), SubResource( 127 ), SubResource( 128 ), SubResource( 129 ) ],
+"loop": true,
+"name": "2_grapple_fall",
+"speed": 10.0
+}, {
+"frames": [ SubResource( 121 ) ],
+"loop": true,
+"name": "2_grapple_follow",
+"speed": 8.0
+}, {
 "frames": [ SubResource( 89 ) ],
 "loop": true,
 "name": "2_grapple_pull",
@@ -517,6 +593,16 @@ animations = [ {
 "name": "2_run",
 "speed": 9.0
 }, {
+"frames": [ SubResource( 130 ), SubResource( 131 ), SubResource( 132 ), SubResource( 133 ) ],
+"loop": true,
+"name": "3_grapple_fall",
+"speed": 10.0
+}, {
+"frames": [ SubResource( 134 ) ],
+"loop": true,
+"name": "3_grapple_follow",
+"speed": 5.0
+}, {
 "frames": [ SubResource( 91 ) ],
 "loop": true,
 "name": "3_grapple_pull",
@@ -560,6 +646,16 @@ animations = [ {
 "frames": [ SubResource( 58 ), SubResource( 59 ), SubResource( 60 ), SubResource( 61 ), SubResource( 62 ), SubResource( 63 ), SubResource( 64 ), SubResource( 65 ) ],
 "loop": true,
 "name": "3_run",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 135 ), SubResource( 136 ), SubResource( 137 ), SubResource( 138 ) ],
+"loop": true,
+"name": "4_grapple_fall",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 139 ) ],
+"loop": true,
+"name": "4_grapple_follow",
 "speed": 5.0
 }, {
 "frames": [ SubResource( 93 ) ],
@@ -693,12 +789,15 @@ __meta__ = {
 
 [node name="sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 34 )
-animation = "grapple_follow"
+animation = "grapple_fall"
+frame = 3
 playing = true
 
 [node name="hair_sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 16 )
-animation = "1_idle"
+animation = "4_grapple_fall"
+frame = 3
+playing = true
 
 [node name="hair_vine" type="Sprite" parent="."]
 texture = ExtResource( 4 )
@@ -743,7 +842,8 @@ one_shot = true
 one_shot = true
 
 [node name="footstep" type="AudioStreamPlayer2D" parent="."]
-volume_db = 1.0
+stream = ExtResource( 9 )
+volume_db = 1.5
 
 [node name="footstep_timer" type="Timer" parent="."]
 one_shot = true
