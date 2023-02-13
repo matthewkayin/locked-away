@@ -1,6 +1,7 @@
 extends KinematicBody2D
 
 signal grounded
+signal grapple_finished
 
 onready var hook_timer = $hook_timer
 onready var jump_timer = $jump_timer
@@ -19,6 +20,7 @@ onready var death_timer = $death_timer
 onready var footstep_sound = $footstep
 onready var grapple_sound = $grapple_sound
 onready var death_sprite = $death
+onready var death_sound = $death_sound
 
 const DECELERATION = 12
 const VELOCITY = 96
@@ -51,7 +53,9 @@ export var hair_length = 1
 
 var entered_first_room = false
 var spawn_point = null
+var pending_current_room = null
 var current_room = null
+var seeking_spawn_point = true
 
 enum HookState {
     NONE,
@@ -163,10 +167,12 @@ func _physics_process(_delta):
     if grounded and velocity.y >= 5:
         velocity.y = 5
 
-    if grounded and spawn_point == null:
+    if grounded and seeking_spawn_point and sprite.visible: 
+        blocks.save_state()
         spawn_point = position
         spawn_point.x = clamp(spawn_point.x, camera.limit_left + 8, camera.limit_right - 8)
         spawn_point.y = clamp(spawn_point.y, camera.limit_top + 8, camera.limit_bottom - 8)
+        seeking_spawn_point = false
 
     if not grounded:
         land_timer.stop()
@@ -207,6 +213,7 @@ func end_hook():
     rotation_direction = 1
     if velocity.x < 0: 
         rotation_direction = -1
+    emit_signal("grapple_finished")
 
 func search_hooks():
     if current_room == null:
@@ -307,19 +314,27 @@ func _on_animation_finished():
         sprite.play("grapple_fall")
 
 func set_current_room(room):
+    pending_current_room = room
+    if hook_state != HookState.NONE:
+        yield(self, "grapple_finished")
+    if room != pending_current_room:
+        return
+    if room == current_room:
+        return
     pause()
     var CAMERA_TRANSITION_DURATION = 1.0
     if not entered_first_room:
         CAMERA_TRANSITION_DURATION = 0
         entered_first_room = true
-    tween.interpolate_property(camera, "limit_left", camera.limit_left, room.position.x - room.collider.shape.extents.x, CAMERA_TRANSITION_DURATION)
-    tween.interpolate_property(camera, "limit_top", camera.limit_top, room.position.y - room.collider.shape.extents.y, CAMERA_TRANSITION_DURATION)
-    tween.interpolate_property(camera, "limit_right", camera.limit_right, room.position.x + room.collider.shape.extents.x, CAMERA_TRANSITION_DURATION)
-    tween.interpolate_property(camera, "limit_bottom", camera.limit_bottom, room.position.y + room.collider.shape.extents.y, CAMERA_TRANSITION_DURATION)
+
+    var extents = Vector2(max(room.collider.shape.extents.x, 240), max(room.collider.shape.extents.y, 135))
+    tween.interpolate_property(camera, "limit_left", camera.limit_left, room.position.x - extents.x, CAMERA_TRANSITION_DURATION)
+    tween.interpolate_property(camera, "limit_top", camera.limit_top, room.position.y - extents.y, CAMERA_TRANSITION_DURATION)
+    tween.interpolate_property(camera, "limit_right", camera.limit_right, room.position.x + extents.x, CAMERA_TRANSITION_DURATION)
+    tween.interpolate_property(camera, "limit_bottom", camera.limit_bottom, room.position.y + extents.y, CAMERA_TRANSITION_DURATION)
     tween.start()
     yield(tween, "tween_all_completed")
-    blocks.save_state()
-    spawn_point = null
+    seeking_spawn_point = true
     current_room = room
     resume()
 
@@ -364,8 +379,11 @@ func die():
     direction = Vector2.ZERO
 
     death_sprite.play("die")
+    death_sound.play()
     yield(death_sprite, "animation_finished")
 
+    for lever in get_tree().get_nodes_in_group("levers"):
+        lever.stop()
     blocks.load_state()
     position = spawn_point
 
@@ -385,6 +403,7 @@ func die():
     visible = true
 
 func grow_hair():
+    seeking_spawn_point = true
     hair_length += 1
     hair_sprite.play(String(hair_length) + "_grow")
     yield(hair_sprite, "animation_finished")

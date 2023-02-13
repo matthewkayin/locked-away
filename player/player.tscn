@@ -1,4 +1,4 @@
-[gd_scene load_steps=133 format=2]
+[gd_scene load_steps=134 format=2]
 
 [ext_resource path="res://player/player.gd" type="Script" id=1]
 [ext_resource path="res://player/player_spritesheet.png" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://sfx/Cut.mp3" type="AudioStream" id=7]
 [ext_resource path="res://player/player_respawn.png" type="Texture" id=8]
 [ext_resource path="res://sfx/walk 2 medium.wav" type="AudioStream" id=9]
+[ext_resource path="res://sfx/sfx_sound_neutral7.wav" type="AudioStream" id=10]
 
 [sub_resource type="AtlasTexture" id=122]
 atlas = ExtResource( 3 )
@@ -790,13 +791,12 @@ __meta__ = {
 [node name="sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 34 )
 animation = "grapple_fall"
-frame = 3
 playing = true
 
 [node name="hair_sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 16 )
 animation = "4_grapple_fall"
-frame = 3
+frame = 1
 playing = true
 
 [node name="hair_vine" type="Sprite" parent="."]
@@ -850,3 +850,7 @@ one_shot = true
 
 [node name="grapple_sound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 7 )
+
+[node name="death_sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 10 )
+volume_db = -1.0
