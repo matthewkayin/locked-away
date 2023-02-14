@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://storyboard.png" type="Texture" id=1]
 [ext_resource path="res://story.gd" type="Script" id=2]
 [ext_resource path="res://enter_ui.png" type="Texture" id=3]
+[ext_resource path="res://sfx/page.wav" type="AudioStream" id=4]
+[ext_resource path="res://bgm/tears-of-princess-13181.mp3" type="AudioStream" id=5]
 
 [node name="story" type="Node2D"]
 script = ExtResource( 2 )
@@ -26,3 +28,10 @@ position = Vector2( 432, 256 )
 texture = ExtResource( 3 )
 
 [node name="timer" type="Timer" parent="."]
+
+[node name="page" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )
+
+[node name="vibes" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+autoplay = true

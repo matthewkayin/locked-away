@@ -314,6 +314,7 @@ func _on_animation_finished():
         sprite.play("grapple_fall")
 
 func set_current_room(room):
+    print("setting room ", room)
     pending_current_room = room
     if hook_state != HookState.NONE:
         yield(self, "grapple_finished")
@@ -322,6 +323,7 @@ func set_current_room(room):
     if room == current_room:
         return
     pause()
+    print("pause")
     var CAMERA_TRANSITION_DURATION = 1.0
     if not entered_first_room:
         CAMERA_TRANSITION_DURATION = 0
@@ -337,6 +339,7 @@ func set_current_room(room):
     seeking_spawn_point = true
     current_room = room
     resume()
+    print("resume")
 
 func pause():
     paused = true

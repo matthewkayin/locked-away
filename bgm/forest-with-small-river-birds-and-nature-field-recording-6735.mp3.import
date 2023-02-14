@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/forest-with-small-river-birds-and-nature-field-recording-6735.mp3-00d672f4c0a6a3faeba6f6b6854b5771.mp3str"
+
+[deps]
+
+source_file="res://bgm/forest-with-small-river-birds-and-nature-field-recording-6735.mp3"
+dest_files=[ "res://.import/forest-with-small-river-birds-and-nature-field-recording-6735.mp3-00d672f4c0a6a3faeba6f6b6854b5771.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

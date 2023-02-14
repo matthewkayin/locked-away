@@ -4,6 +4,7 @@ onready var sprite = $sprite
 onready var tween = $tween
 onready var timer = $timer
 onready var enter = $enter
+onready var page = $page
 
 func _ready():
     sprite.frame = 0
@@ -36,6 +37,7 @@ func fade_out():
 
 func _process(_delta):
     if sprite.modulate.a == 1 and Input.is_action_just_pressed("enter"):
+        page.play()
         fade_out()
     
 func end_scene():

@@ -790,12 +790,13 @@ __meta__ = {
 
 [node name="sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 34 )
-animation = "grapple_fall"
+animation = "idle"
+frame = 1
 playing = true
 
 [node name="hair_sprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 16 )
-animation = "4_grapple_fall"
+animation = "1_idle"
 frame = 1
 playing = true
 
