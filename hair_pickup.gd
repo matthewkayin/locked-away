@@ -1,7 +1,10 @@
 extends Area2D
 
+signal collected
+
 onready var sprite = $sprite
 onready var fruit = $fruit
+onready var sound = $sound
 
 var has_been_used = false
 
@@ -36,8 +39,11 @@ func _on_body_entered(body):
     fruit.play()
     while fruit.frame != 13:
         yield(fruit, "frame_changed")
+    sound.play()
     body.grow_hair()
     yield(fruit, "animation_finished")
     fruit.visible = false
 
     body.paused_input = false
+
+    emit_signal("collected")

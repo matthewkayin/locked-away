@@ -41,4 +41,8 @@ func _process(_delta):
         fade_out()
     
 func end_scene():
-    get_tree().change_scene("res://world.tscn")
+    var root = get_parent()
+    root.remove_child(self)
+    self.call_deferred("free")
+    var world = load("res://world.tscn").instance()
+    root.add_child(world)

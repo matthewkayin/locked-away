@@ -1,8 +1,10 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=20 format=2]
 
 [ext_resource path="res://lever.gd" type="Script" id=1]
 [ext_resource path="res://lever.png" type="Texture" id=2]
 [ext_resource path="res://player/cursor.png" type="Texture" id=3]
+[ext_resource path="res://sfx/blocks_close.wav" type="AudioStream" id=4]
+[ext_resource path="res://sfx/blocks_open.wav" type="AudioStream" id=5]
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 2 )
@@ -89,3 +91,9 @@ playing = true
 
 [node name="collider" type="CollisionShape2D" parent="."]
 shape = SubResource( 19 )
+
+[node name="open_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 5 )
+
+[node name="close_sound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 4 )

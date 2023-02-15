@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/fairy-intro-103880.mp3-0187f22b649e1df11467ba338426a776.mp3str"
+
+[deps]
+
+source_file="res://bgm/fairy-intro-103880.mp3"
+dest_files=[ "res://.import/fairy-intro-103880.mp3-0187f22b649e1df11467ba338426a776.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

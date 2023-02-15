@@ -1,7 +1,8 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://queen.gd" type="Script" id=1]
 [ext_resource path="res://queen.png" type="Texture" id=2]
+[ext_resource path="res://dialog.tscn" type="PackedScene" id=3]
 
 [sub_resource type="AtlasTexture" id=1]
 atlas = ExtResource( 2 )
@@ -114,9 +115,17 @@ z_index = -1
 z_as_relative = false
 frames = SubResource( 20 )
 animation = "ha"
-frame = 3
+frame = 4
 playing = true
 
 [node name="collider" type="CollisionShape2D" parent="."]
 position = Vector2( 0, -40 )
 shape = SubResource( 21 )
+
+[node name="dialog" parent="." instance=ExtResource( 3 )]
+margin_left = -104.0
+margin_top = -32.0
+margin_right = -64.0
+margin_bottom = 8.0
+pitch_scale = 4
+use_right_tail = true

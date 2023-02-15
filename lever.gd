@@ -2,6 +2,8 @@ extends Hook
 
 onready var sprite = $sprite
 onready var blocks = get_node("../../blocks")
+onready var open_sound = $open_sound
+onready var close_sound = $close_sound
 
 var stopped = false
 
@@ -13,6 +15,10 @@ func on_pull(player):
     stopped = false
     available = false
     sprite.play("pull")
+    if not blocks.open:
+        open_sound.play()
+    else:
+        close_sound.play()
     if player.grounded:
         player.end_hook()
     yield(sprite, "animation_finished")

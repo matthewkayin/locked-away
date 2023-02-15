@@ -16,10 +16,14 @@ onready var select = $select
 
 var cursor_index = 0
 var ui_enabled = false
+var end_scene_on_start = false
 
 func _ready():
     set_cursor()
-    fade_in()
+    if end_scene_on_start:
+        end_scene()
+    else:
+        fade_in()
 
 func fade_in():
     ui_enabled = false
@@ -45,7 +49,11 @@ func _process(_delta):
         select.play()
         if cursor_index == 0:
             yield(fade_out(), "completed")
-            var _ret = get_tree().change_scene("res://story.tscn")
+            var root = get_parent()
+            root.remove_child(self)
+            self.call_deferred("free")
+            var story = load("res://story.tscn").instance()
+            root.add_child(story)
         else:
             get_tree().quit()
     
@@ -67,7 +75,7 @@ func end_scene():
     words.modulate = Color(1, 1, 1, 0)
 
     yield(fade_in(), "completed")
-    timer.start(0.3)
+    timer.start(3.0)
     yield(timer, "timeout")
 
     jump.visible = true

@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/harp-glissando-ascending-short-103885.mp3-41f47631934a32fa5e665cca7b8a9f47.mp3str"
+
+[deps]
+
+source_file="res://sfx/harp-glissando-ascending-short-103885.mp3"
+dest_files=[ "res://.import/harp-glissando-ascending-short-103885.mp3-41f47631934a32fa5e665cca7b8a9f47.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

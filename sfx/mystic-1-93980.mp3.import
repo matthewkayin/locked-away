@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/mystic-1-93980.mp3-87c5471b780a60056e7b0be47c634b8c.mp3str"
+
+[deps]
+
+source_file="res://sfx/mystic-1-93980.mp3"
+dest_files=[ "res://.import/mystic-1-93980.mp3-87c5471b780a60056e7b0be47c634b8c.mp3str" ]
+
+[params]
+
+loop=false
+loop_offset=0

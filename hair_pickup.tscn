@@ -1,7 +1,8 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=32 format=2]
 
 [ext_resource path="res://hair_pickup.gd" type="Script" id=1]
 [ext_resource path="res://superfruit.png" type="Texture" id=2]
+[ext_resource path="res://sfx/harp-glissando-ascending-short-103885.mp3" type="AudioStream" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 40, 16 )
@@ -148,3 +149,6 @@ playing = true
 [node name="fruit" type="AnimatedSprite" parent="."]
 visible = false
 frames = SubResource( 28 )
+
+[node name="sound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 3 )
