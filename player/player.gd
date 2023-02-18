@@ -29,7 +29,7 @@ const GRAVITY = 10
 const MAX_JUMP_HEIGHT = 1
 
 const HOOK_DELAY_TIME = 0.2
-const HOOK_PULL_SPEED = 256 
+const HOOK_PULL_SPEED = 256
 const MIN_HOOK_DIST = 16
 const MAX_HOOK_DIST = [0, 64, 96, 128]
 const HOOK_SPEED = [0, 64, 96, 128]
@@ -50,6 +50,7 @@ var is_grapple_follow = false
 var jump_height = null
 var nearest_hook = null
 export var hair_length = 1
+export var allow_jump = false
 
 var entered_first_room = false
 var spawn_point = null
@@ -102,7 +103,7 @@ func _physics_process(_delta):
             direction.x = 0
 
     # Jump input
-    if not paused_input:
+    if not paused_input and allow_jump:
         if Input.is_action_just_pressed("jump"):
             jump_timer.start(JUMP_INPUT_DURATION)
         if jump_height != null and (position.y <= jump_height or Input.is_action_just_released("jump")):
@@ -169,7 +170,7 @@ func _physics_process(_delta):
     if grounded and velocity.y >= 5:
         velocity.y = 5
 
-    if grounded and seeking_spawn_point and sprite.visible: 
+    if grounded and seeking_spawn_point and sprite.visible:
         blocks.save_state()
         spawn_point = position
         spawn_point.x = clamp(spawn_point.x, camera.limit_left + 8, camera.limit_right - 8)
@@ -213,7 +214,7 @@ func end_hook():
     sprite.play("grapple_follow")
     is_grapple_follow = true
     rotation_direction = 1
-    if velocity.x < 0: 
+    if velocity.x < 0:
         rotation_direction = -1
     emit_signal("grapple_finished")
 
@@ -232,7 +233,7 @@ func search_hooks():
     var nearest_hook_dist = 0
     for hook in get_tree().get_nodes_in_group("hooks"):
         hook.set_inactive()
-    
+
     for hook in get_tree().get_nodes_in_group("hooks"):
         if not hook.available:
             continue
@@ -285,7 +286,7 @@ func update_sprite(force_anim=""):
         sprite.play("jump_apex")
     elif not grounded and jump_height != null and abs(position.y - jump_height) > 16:
         sprite.play("jump")
-    elif not grounded: 
+    elif not grounded:
         sprite.play("jump_rise")
 
     if grounded and not was_grounded:
@@ -299,14 +300,14 @@ func update_sprite(force_anim=""):
         sprite.rotation = (nearest_hook.position - position).angle() + (PI / 2)
     elif grounded:
         sprite.rotation = 0
-    elif sprite.rotation != 0: 
+    elif sprite.rotation != 0:
         var rotation_step = rotation_direction * 10
         if abs(sprite.rotation_degrees + rotation_step) >= 360:
             sprite.rotation_degrees = 0
         else:
             sprite.rotation_degrees += rotation_direction * 10
     hair_sprite.rotation = sprite.rotation
-    
+
     sprite.flip_h = facing_direction == -1
     hair_sprite.flip_h = sprite.flip_h
 
@@ -359,7 +360,7 @@ func die():
         return
 
     paused_input = true
-        
+
     sprite.visible = false
     hair_sprite.visible = false
     hair_vine.visible = false

@@ -68,7 +68,7 @@ func _on_blip_finished():
 func _process(_delta):
     if not visible:
         return
-    if Input.is_action_just_pressed("jump"):
+    if Input.is_action_just_pressed("grapple"):
         if not is_finished():
             timer.stop()
             label.percent_visible = 1

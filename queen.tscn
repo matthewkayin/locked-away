@@ -115,7 +115,7 @@ z_index = -1
 z_as_relative = false
 frames = SubResource( 20 )
 animation = "ha"
-frame = 4
+frame = 3
 playing = true
 
 [node name="collider" type="CollisionShape2D" parent="."]

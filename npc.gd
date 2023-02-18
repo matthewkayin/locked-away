@@ -21,7 +21,7 @@ func _on_body_entered(body):
 
     sprite.play("rise")
     yield(sprite, "animation_finished")
-    
+
     sprite.play("talk")
     dialog.open("Hey")
     yield(dialog, "finished")
@@ -37,7 +37,7 @@ func _on_body_entered(body):
     yield(dialog, "finished")
 
     sprite.play("talk")
-    dialog.open("Just use A and D to move\nand SPACE to jump.")
+    dialog.open("Just use SPACE\nto jump.")
     yield(dialog, "finished")
     dialog.open("Now go! Get outta here!")
     yield(dialog, "finished")
@@ -46,3 +46,4 @@ func _on_body_entered(body):
     sprite.play("idle")
     has_played_scene = true
     body.paused_input = false
+    body.allow_jump = true

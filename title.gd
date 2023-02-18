@@ -56,7 +56,7 @@ func _process(_delta):
             root.add_child(story)
         else:
             get_tree().quit()
-    
+
 func set_cursor():
     if cursor_index == 0:
         play.frame = 1
