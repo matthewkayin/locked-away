@@ -126,7 +126,7 @@ centered = false
 
 [node name="words" type="AnimatedSprite" parent="layer3"]
 frames = SubResource( 7 )
-frame = 2
+frame = 1
 playing = true
 centered = false
 
