@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://queen.gd" type="Script" id=1]
 [ext_resource path="res://queen.png" type="Texture" id=2]
@@ -28,6 +28,14 @@ region = Rect2( 192, 108, 48, 36 )
 atlas = ExtResource( 2 )
 region = Rect2( 240, 108, 48, 36 )
 
+[sub_resource type="AtlasTexture" id=28]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 144, 48, 36 )
+
+[sub_resource type="AtlasTexture" id=29]
+atlas = ExtResource( 2 )
+region = Rect2( 48, 144, 48, 36 )
+
 [sub_resource type="AtlasTexture" id=7]
 atlas = ExtResource( 2 )
 region = Rect2( 0, 36, 48, 36 )
@@ -56,27 +64,27 @@ region = Rect2( 240, 36, 48, 36 )
 atlas = ExtResource( 2 )
 region = Rect2( 0, 0, 48, 36 )
 
-[sub_resource type="AtlasTexture" id=14]
+[sub_resource type="AtlasTexture" id=22]
 atlas = ExtResource( 2 )
 region = Rect2( 0, 72, 48, 36 )
 
-[sub_resource type="AtlasTexture" id=15]
+[sub_resource type="AtlasTexture" id=23]
 atlas = ExtResource( 2 )
 region = Rect2( 48, 72, 48, 36 )
 
-[sub_resource type="AtlasTexture" id=16]
+[sub_resource type="AtlasTexture" id=24]
 atlas = ExtResource( 2 )
 region = Rect2( 96, 72, 48, 36 )
 
-[sub_resource type="AtlasTexture" id=17]
+[sub_resource type="AtlasTexture" id=25]
 atlas = ExtResource( 2 )
 region = Rect2( 144, 72, 48, 36 )
 
-[sub_resource type="AtlasTexture" id=18]
+[sub_resource type="AtlasTexture" id=26]
 atlas = ExtResource( 2 )
 region = Rect2( 192, 72, 48, 36 )
 
-[sub_resource type="AtlasTexture" id=19]
+[sub_resource type="AtlasTexture" id=27]
 atlas = ExtResource( 2 )
 region = Rect2( 240, 72, 48, 36 )
 
@@ -86,6 +94,11 @@ animations = [ {
 "loop": true,
 "name": "angy",
 "speed": 6.0
+}, {
+"frames": [ SubResource( 28 ), SubResource( 29 ) ],
+"loop": true,
+"name": "cry",
+"speed": 5.0
 }, {
 "frames": [ SubResource( 7 ), SubResource( 8 ), SubResource( 9 ), SubResource( 10 ), SubResource( 11 ), SubResource( 12 ) ],
 "loop": true,
@@ -97,7 +110,7 @@ animations = [ {
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 14 ), SubResource( 15 ), SubResource( 16 ), SubResource( 17 ), SubResource( 18 ), SubResource( 19 ) ],
+"frames": [ SubResource( 22 ), SubResource( 23 ), SubResource( 24 ), SubResource( 25 ), SubResource( 26 ), SubResource( 27 ) ],
 "loop": true,
 "name": "what",
 "speed": 8.0
@@ -114,8 +127,8 @@ script = ExtResource( 1 )
 z_index = -1
 z_as_relative = false
 frames = SubResource( 20 )
-animation = "ha"
-frame = 3
+animation = "cry"
+frame = 1
 playing = true
 
 [node name="collider" type="CollisionShape2D" parent="."]

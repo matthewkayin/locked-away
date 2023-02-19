@@ -2,7 +2,7 @@ extends Area2D
 
 onready var sprite = $sprite
 onready var dialog = $dialog
-var player
+var player = null
 
 var angy = false
 var has_played_scene = false
@@ -62,5 +62,7 @@ func _process(_delta):
             sprite.play("angy")
         else:
             sprite.play("idle")
+    elif player != null and player.current_room != null and player.current_room.name != "queen_room":
+        sprite.play("cry")
     else:
         sprite.play("idle")

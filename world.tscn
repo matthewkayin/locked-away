@@ -1,4 +1,4 @@
-[gd_scene load_steps=94 format=2]
+[gd_scene load_steps=93 format=2]
 
 [ext_resource path="res://tileset.png" type="Texture" id=1]
 [ext_resource path="res://player/player.tscn" type="PackedScene" id=2]
@@ -154,9 +154,6 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 
 [sub_resource type="ConvexPolygonShape2D" id=65]
-points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
-
-[sub_resource type="ConvexPolygonShape2D" id=71]
 points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 
 [sub_resource type="ConvexPolygonShape2D" id=72]
@@ -1344,16 +1341,9 @@ points = PoolVector2Array( 0, 0, 16, 0, 16, 16, 0, 16 )
 56/navigation_offset = Vector2( 0, 0 )
 56/shape_offset = Vector2( 0, 0 )
 56/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
-56/shape = SubResource( 71 )
 56/shape_one_way = false
-56/shape_one_way_margin = 1.0
-56/shapes = [ {
-"autotile_coord": Vector2( 0, 0 ),
-"one_way": false,
-"one_way_margin": 1.0,
-"shape": SubResource( 71 ),
-"shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
-} ]
+56/shape_one_way_margin = 0.0
+56/shapes = [  ]
 56/z_index = 0
 57/name = "crate"
 57/texture = ExtResource( 1 )
@@ -1835,7 +1825,7 @@ extents = Vector2( 304, 202 )
 extents = Vector2( 80, 160 )
 
 [sub_resource type="RectangleShape2D" id=89]
-extents = Vector2( 240, 327 )
+extents = Vector2( 240, 311 )
 
 [sub_resource type="RectangleShape2D" id=78]
 extents = Vector2( 240, 416 )
@@ -1939,6 +1929,7 @@ region_enabled = true
 region_rect = Rect2( 0, 0, 480, 270 )
 
 [node name="tilemap" type="TileMap" parent="."]
+z_index = -1
 tile_set = SubResource( 18 )
 cell_size = Vector2( 16, 16 )
 format = 1
@@ -1958,10 +1949,9 @@ tile_data = PoolIntArray( -2162527, 1, 0, -2096991, 1, 0, -2031455, 1, 0, -19005
 script = ExtResource( 8 )
 
 [node name="player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 48, 180 )
+position = Vector2( 64, 180 )
 
 [node name="rooms" type="Node2D" parent="."]
-visible = false
 
 [node name="room" type="Area2D" parent="rooms"]
 position = Vector2( 96, 96 )
@@ -1998,11 +1988,11 @@ script = ExtResource( 6 )
 [node name="collider" type="CollisionShape2D" parent="rooms/room17"]
 shape = SubResource( 75 )
 
-[node name="room18" type="Area2D" parent="rooms"]
+[node name="queen_room" type="Area2D" parent="rooms"]
 position = Vector2( 2576, 32 )
 script = ExtResource( 6 )
 
-[node name="collider" type="CollisionShape2D" parent="rooms/room18"]
+[node name="collider" type="CollisionShape2D" parent="rooms/queen_room"]
 shape = SubResource( 86 )
 
 [node name="room21" type="Area2D" parent="rooms"]
@@ -2034,11 +2024,10 @@ script = ExtResource( 6 )
 shape = SubResource( 95 )
 
 [node name="room20" type="Area2D" parent="rooms"]
-position = Vector2( 2576, 448 )
+position = Vector2( 2576, 496 )
 script = ExtResource( 6 )
 
 [node name="collider" type="CollisionShape2D" parent="rooms/room20"]
-position = Vector2( 0, 64 )
 shape = SubResource( 89 )
 
 [node name="room4" type="Area2D" parent="rooms"]
@@ -2267,7 +2256,7 @@ rotation = -0.00258456
 position = Vector2( 3072, 80 )
 
 [node name="lantern37" parent="lanterns" instance=ExtResource( 3 )]
-position = Vector2( 2944, 176 )
+position = Vector2( 2944, 168 )
 
 [node name="lantern50" parent="lanterns" instance=ExtResource( 3 )]
 position = Vector2( 2936, 424 )

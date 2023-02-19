@@ -70,7 +70,7 @@ region_rect = Rect2( 0, 0, 6, 8 )
 visible = false
 position = Vector2( 0, 8 )
 frames = SubResource( 5 )
-frame = 2
+frame = 1
 playing = true
 
 [node name="raycast" type="RayCast2D" parent="."]
